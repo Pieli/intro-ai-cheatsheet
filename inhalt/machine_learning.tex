@@ -1,0 +1,143 @@
+\section{Machine Learning}
+\subsection*{Components of a Learning Agent}
+- performance element: decision making comp. \\
+- learning element: improves the agent's performance through experience \\
+- critic: feedback component that evaluates the agent's behavior \\
+- problem generator: explorative component that seeks new experience
+
+\section*{Supervised Learning}
+- learn unknown target function $f$ \\
+- input: trainingset of labeled examples $(x, f(x))$ \\
+- output: hypothesis/model $h$ that is similar to f \\ 
+- classification: learn $f$ with discrete output \\
+- regression: learn $f$ with real valued output
+
+\subsection*{Entropy}
+goal: degree of uncertainty of a random variable \\
+$H(x) := -(P(x)\cdot\log_{2} P(x) + P(\lnot x)\cdot\log_{2}P(\lnot x))$ \\
+higher entropy $\rightarrow$ higher remaining difficulty
+
+\subsection*{Decision Trees}
+- iterativly build decision tree \\
+- perform greedy search over possible extensions \\
+- extend based on remaining difficulty
+
+\subsection*{Decision Trees Cookbook}
+1. comp. entropy $H$ of problem (or initial bool set) \\
+2. compute $H$ of features (weight-avrg of $H$) \\
+3. choose feature \\
+4. repeat
+
+\subsection*{Decision Trees Step-by-Step (?)}
+1. compute current difficulty \\
+2. compute $H$ given we extend d-tree with a feature \\
+3. substract prob-weight $H$s from prev. difficulty to obtain info-gain for selected feature \\
+4. extend d-tree with feature with highest info-gain
+
+\subsection*{Linear Regression}
+- training set $\{(x_{i}, y_{i}) | 1 \leq i \leq N\}$ \\
+- goal: $h_{w} = w_{1} \cdot x + w_{0}$ \\
+- Loss: $h_{w} = \sum_{i=1}^{N}(y_{i} - h_{w}(x_{i}))^{2}$ \\
+- solution is $h_{w}$ that minimizes loss \\
+- method: partial derivatives to 0, unique solution \\ 
+- $w_{1} = \frac{N(\sum x_i y_1) - (\sum x_i)(\sum y_i)}{N(\sum x^2_i) - (\sum x_i)^2}$ \\
+- $w_0 = \frac{\sum y_i - w_1 \cdot \sum x_i}{N}$
+
+
+\subsection*{Gradient Descent}
+- start: arbitrary $w_0$ and $w_1$, minimize\\
+-  move in direction of steepest descent in each step \\ 
+- use learning rate (step size) $\alpha$ to adjust change \\
+- converges to global optimum since loss is convex \\
+- update rules: \\
+$w_0 \leftarrow w_0 + \alpha \sum_{i=1}^{N}(y_i - h_w(x_i))$ \\
+$w_1 \leftarrow w_1 + \alpha \sum_{i=1}^{N}(x_i \cdot (y_i - h_w(x_i))$ 
+
+
+\section*{Passive Reinforcement Learning}
+\subsection*{Difference Planning and RI-learning}
+Planning: \\ 
+has model of env.;deliberates to improve policy;(no interaction with env.)
+
+RL agent: \\ 
+has no or partial model;interacts with env.;improves policy indirectly by planning on learned model(model-based RL); improves policy directly by learning Q-values or policy (model-free RL) 
+
+\subsection*{Direct Utility Estimation Cookbook}
+- each path occurs proportional to Prob. \\
+- converges to true state-values \\
+$\hat{V}_{\pi}(s) \rightarrow {V}_{\pi}(s)$; converges to true state-values \\ 
+1. trail: from $s_0$ to $s_n$ terminal \\
+2. observe: visited states and obtained rewards \\
+3. increase: visitcounter $N(s_i)$ of all $s_i$\\
+4. update: $\hat{V}_{\pi}(s_i)$\\ of all $s_i$ to average of obtained rewards \\
+$\hat{V}_{\pi}(s_i) \leftarrow \hat{V}_{\pi}(s_i) + \frac{\sum^{n}_{j=i} \gamma^{j-i} \cdot r_j - \hat{V}_{\pi}(s_i)}{N(s_i)}$ \\
+multiply V with previous N add new reward and divide through new N
+
+\subsection*{Adaptive Dynamic Programming}
+TODO
+
+\subsection*{Passive Temporal Difference}
+- converges: with a lot of steps and small $\alpha$ \\
+- update: propportional to probability \\
+- converges to true state-values under $\pi$ \\
+- update immediate and no terminal states (but slow convergence) \\
+1. execute action $\pi(s)$ in $s$ \\
+2. observe successor $s`$ and reward $r$ \\
+3. update $\hat{V}_{\pi}(s)$ s.t. difference between $\hat{V}_{\pi} (s$) and $\hat{V}_{\pi}(s`)$ better matches expectation: \\
+$\hat{V}_{\pi} (s) \leftarrow \hat{V}_{\pi} (s)+\alpha(r + \gamma \hat{V}_{\pi} (s`) - \hat{V}_{\pi} (s))$ \\
+( $\hat{V}_{\pi} (s) = 0$ for terminal states $s$) \\
+4. repeat
+
+\section*{Active Reinforcement Learning}
+\subsection*{SARSA}
+- difference to temporal learning is that Q-values are estimated instead of States \\
+- if fixed $\pi$ converges to true s-values under $\pi$ \\
+- else converges to true state-values (GLIE) \\ 
+1. select: action $a`$ in $s`$ \\
+2. update: if $s`$ was reached with a from $s$: \\
+$\hat{Q}(s, a) \leftarrow \hat{Q}(s, a)+\alpha \cdot (r + \gamma \hat{Q}(s`, a`) - \hat{Q}(s, a))$ \\
+( $\hat{Q}(s, \cdot) = 0$ for terminal states $s$) \\
+3. execute: $a`$ and repeat
+
+
+\section*{Exploration}
+\subsection*{Fixed Exploration}
+- exploration with constant $N_e$ \\
+- selects an action that has been executed $< N_e$ \\
+- if there no action, the greedy action is selected \\
+- not GLIE: greedy in the limit +  not explore forever
+ 
+\subsection*{$\epsilon$-greedy}
+- selects greedy action with (1 - $\epsilon$) \\
+- otherwise uniform distributed \\
+- weakness: non greedy moves are treated equal \\
+- not GLIE: explores forever + not greedy in the limit \\
+- GLIE variant: decaying $\epsilon$
+
+\subsection*{Softmax}
+- constant parameter $\tau > 0$\\
+- select actions freq. proportionaly to estimate \\
+- Boltzmann exploration:  $P(n) \propto e^_{\frac{\hat{u}(n)}{\tau}}$ (for min $-\hat{u}$) \\
+- Boltzmann weakness: doesn't account for variance \\
+- softmax can perform arbitrary bad
+- GLIE variant: decaying $\tau$
+
+\subsection*{UCB1}
+- upper confidence bound: coptimal in the limit \\
+- select successor n` of n that maximizes $\hat{u}(n`) + B(n`)$ \\
+- select $B(n`)$ s.t $u_*(n`) \leq \hat{u}(n`) + B(n`)$ \\
+-  Chernof-hoeffding: $\sqrt{\frac{2 \cdot \ln N(n)}{N(n`)}}$
+
+
+\subsection*{Q-Learning}
+1. select action $a$ in $s$ \\
+2. execute a and observe $r$ and $s′$ \\
+3. update $\hat{Q}(s,a)$: \\
+$\hat{Q}(s, a) \leftarrow \hat{Q}(s, a)+ \alpha \cdot (r + \gamma \max_{a`} \hat{Q}(s`, a`) -  \hat{Q}(s, a))\\ 
+( \hat{Q}(s, \cdot) = 0$ for terminal states s) \\ 
+4. repeat \\
+- updates by using best action ion $s`$ rather one that is exec. \\
+- off policy: performs update on best possible subseq. decision \\
+- GLIE: infin. exploration for convergence + greedy in the limit for low regret
+
+

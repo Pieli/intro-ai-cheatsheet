@@ -1,5 +1,5 @@
-## Template for a very compact LaTeX Cheatsheet
+# Introduction to AI cheatsheet
 
-![page 1](https://i.stack.imgur.com/jEcrv.png)
+Based on the lecture-slides and the book "Artificial Intelligence, a modern Approach" by Russell and Norvigc
 
-![page 2](https://i.stack.imgur.com/jq4dI.png)
+[final product](final.pdf)

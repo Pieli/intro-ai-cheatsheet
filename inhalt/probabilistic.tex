@@ -1,0 +1,135 @@
+\section{probabilistic}
+\section*{Decisions under uncertainty}
+\subsection*{Decision Theory}
+Decision Theory = probability + utility 
+\subsection*{Unconditional Probability}
+- a world $\omega$, is one possible state \\
+- described as assignments to variables, e.g $w_{2,3} $\\
+- sample space $\Omega$: finite set of all possible worlds \\
+- $\Omega = \{w_{x,y} | condition\}$\\
+- Probability model: for each  $\omega$ a $P(\omega)$\\
+- $\sum_{\omega \in \Omega} P(\omega) = 1$ \\
+- event $\varphi$ is a subset of $\Omega$\\
+- example event: "has onions on it" (pizza) \\
+- $P(\varphi)$ is the sum of probabilities \\
+- random variable $X$ is a property of the world \\
+- random variable: $X: \Omega \rightarrow dom(X)$ \\
+- random variable example: dom(Onion) = {T, F}, Onion($\omega_{1}) = F$ \\
+- joint probability distributions: $P(Salami \land Broccoli)$ or $P(Salami, Broccoli)$\\
+- full joint distribution: over all random variables \\
+- marginalization: summing out irrelevant variables $Y_1, ..., Y_m$ \\
+- margin: $P(X_1, .., X_n) = \sum_{y_1, .., y_m} P(X_1, ..,X_n, y_1, .., y_m)$ 
+
+
+
+\subsection*{Conditional Probability}
+- conditional probability $P(x | e)$ when e \\
+- joint prob.: $P(x | e) =  \frac{P(x, e)}{P(e)}$ \\
+- Product rule: $P(x,  e) = P(x | e) \cdot P(e)$ \\
+- full joint distribution sufficient for all queries
+
+\subsection*{Query F.J. Distribution Cookbook (conditional)}
+space: $O(k^{n})$ for k values\\
+time: $O(k^{m})$ for m hidden values\\
+given: f.j.dist. $P(O, M, S, B)$ and query $P(S, B | m)$, steps:\\
+1. part. vars in query, evidence and hidden vars\\
+2. select entries consistent with evidence (m)\\
+3. sum out hidden vars (probs indep. of hidden)\\
+4. normalize (add probs and divide each prob with it)
+
+\subsection*{Chain Rule}
+- goal: expression of joint probabilities \\
+- $P(x_1, ..., x_n) = P(x_n| x_1, ..., x_{n-1}) \cdot P(x_1,..., x_{n-1}) $\\
+- $P(x_1, ..., x_n) = P(x_n| x_1, ..., x_{n-1}) \cdot P(x_{n-1}|x_1,..., x_{n-1}) \cdot P/x_1, ..., x_{n-2})$\\
+- $P(x_1, ..., x_n) = \prod_{i=1}^{n} P(x_i | x_1, ..., x_{i-1})$
+
+\subsection*{Bayes' Rule}
+- allows to compute cond. probab. from its reverse \\
+- $P(x | y) = \frac{P(y | x) \cdot P(x)}{P(y)}$
+
+\subsection*{Independence}
+- $P(x,y) = P(x) \cdot P(y)$ f.a $x \in dom(X)$ and $y \in dom(Y)$ \\
+- $P(x | y) = P(x)$ and $P(y | x) = P(y)$
+
+% TODO: complete
+
+\section*{Markov decision process}
+\subsection*{Expectimax}
+decision node: max of util. of children \\
+chance node: prob-weight-sum of util. of children \\
+- similar to Minimax \\
+- computes (correct) expected utilities \\
+- also the action: yields the max. expect. utility \\
+- but it can obtain a much higher or lower utility
+
+
+\subsection*{Stochastic Shortest Path Problem}
+$\langle S, A, c, T, s_0, S_*  \rangle$ \\
+$T: S \times A \times S \rightarrow [0,1]$, $\sum_{s` \in S} T(s, a, s`) = 1$
+
+
+\subsection*{Disc. Reward Infinite-horizon MDPs}
+- MDPs acts forever, infinite horizon, can be cyclic\\
+- every action yields a pos./neg. reward \\
+- (not only utilities in terminal states) \\
+- aim: max overall reward (not goal state)\\
+- disc. factor: converge (despite properties)
+
+\subsection*{MPD definition}
+(discounted reward) infinite-horizon MPD \\
+$T = \langle S, A, R, T , s_0 , \gamma \rangle$ with \\
+$S$, $A$ = finite sets; $\gamma \in (0, 1)$ = disc factor  \\ 
+$R$ = reward function $R : S \times A \times S \rightarrow \mathbb{R}$\\
+$T$ = transition function $T : S \times A \times S  \rightarrow [0, 1]$ \\
+we require $\sum_{s′ \in S} T (s, a, s`) = 1.$
+
+\subsection*{Policy Definition}
+$\pi : S \rightarrow A \cup \{\bot\}$ (s.t $\pi(s) \in A(s) \cup \{\bot\}$ f.a $s \in S$.) \\
+$S_{\pi}(s)$ = set of reachable states  from $s$ under $\pi$ 
+\subsection*{Bellman Equation}
+The state-value (expected reward): \\
+$V_{*}(s) := \max_{a \in A(s)} Q_{*}(s, a)$ \\
+The action-value: \\
+$Q_{*}(s, a) := \sum_{s` \in succ(s,a)} T(s,a,s`) \cdot (R(s,a,s`) + \gamma \cdot V_{*}(s`))$ 
+\subsection*{Optimal Policy}
+$V_{*}(s)$ of Bellman (max expected reward from $s$) \\
+optimal policy if: \\
+- $\pi(s) \in \arg\max_{a \in A(s)} Q_{*}(s, a)$ f.a $s \in S_{\pi}(s_{0})$\\
+(gives best action for highest expected reward)\\
+- expected reward of $\pi$ in $T$ is $V_{*}(s_{0})$ \\
+(policy gives the optimal solution)
+\subsection*{Value Functions}
+The state-value (expected reward): \\
+$V_{\pi}(s) := Q_{\pi}(s, \pi(s))$ (s is in the reachable set $S_{\pi}$)\\
+The action-value: \\
+$Q_{\pi}(s, a):=$ \\
+$\sum_{s` \in succ(s, a)} T(s, a, s`) \cdot (R(s,a,s`) + \gamma \cdot V_{\pi}(s`))$
+
+\subsection*{Policy Evaluation (iterative)}
+evaluation goal: computes $V_{\pi}$ for a $\pi$ \\
+$\hat{V}^{0}_{\pi}(s) \in \mathbb{R}$ arbitrary f.a. $s \in S$  update rule: \\
+$V^{i}_{\pi}(s) = \sum_{s`\in succ(s,\pi(s))} T (s, \pi(s), s`)·(R(s, \pi(s), s`) + \gamma \cdot V^{i-1}_{\pi}(s`))$ \\
+converges to the true state-values (if $\epsilon$ is small) \\
+$\lim_{i \rightarrow \infty} \hat{V}^{i}_{\pi}(s) = V_{\pi}(s)$ \quad f.a $s \in S$ 
+
+
+\subsection*{Policy Improvement (Greedy Action)}
+V be a state-value function for $T$\\
+the set of greedy actions in s with respect to V is: \\
+$A_{v}(s) =  \arg\max_{a \in A(s)} \sum_{s` \in succ(s,a)} T(s, a, s`) \cdot (R(s,a,s`) + \gamma \cdot V(s`))$ \\
+policy $\pi_V$ with $\pi_V(s) \in A_V(s)$ is a greedy policy
+
+\subsection*{Policy Iteration}
+- starts with arbitrary policy $\pi_{0}$ \\
+- alternates $\pi$ evaluation and $\pi$ improvement\\
+- as long as policy changes
+
+\subsection*{Value Iteration}
+- searches over state-values (instead $\pi$)\\
+- ($\hat{V}^{0}, \hat{V}^{1}, \hat{V}^{2} ... \hat{V}_{*}$) \\
+- $\hat{V}^{i+1}(s):= \\
+\max_{a \in A(s)} \sum_{s` \in succ(s,a)} T(s, a, s`) \cdot (R(s,a,s`) + \gamma \hat{V}^{i}(s`))$\\
+- starts with arbitrary $\hat{V}^{0}$ \\
+- converges to optimal policy \\
+- terminates when max change is smaller than $\epsilon$ \\
+- max expect. value of the best action

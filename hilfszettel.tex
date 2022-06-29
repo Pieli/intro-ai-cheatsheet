@@ -11,10 +11,13 @@
 \usepackage[t1]{sourcesanspro}
 \usepackage{multicol}
 \usepackage{wrapfig}
-\usepackage[top=0mm,bottom=1mm,left=0mm,right=1mm]{geometry}
+%\usepackage[a4paper, margin=0]{geometry}
+\usepackage[top=5mm,bottom=5mm,left=5mm,right=5mm]{geometry}
 \usepackage[framemethod=tikz]{mdframed}
 \usepackage{microtype}
 \usepackage{pdfpages}
+\usepackage{enumitem}
+\usepackage{amsmath}% http://ctan.org/pkg/amsmath
 
 \let\bar\overline
 
@@ -23,15 +26,9 @@
 \begin{document}
 %\footnotesize
 \small
-\begin{multicols*}{5}
-\input{inhalt/aussagen}
-\input{inhalt/mengen}
-\input{inhalt/relationen}
-\input{inhalt/abbildungen}
-%\input{inhalt/beweise} 
-\input{inhalt/graphen}
-%\input{inhalt/graphalgo}
-%\input{inhalt/bool}
-%\input{inhalt/formeln}
+\begin{multicols*}{4}
+\input{inhalt/symbolic}
+\input{inhalt/probabilistic}
+\input{inhalt/machine_learning}
 \end{multicols*}
 \end{document}

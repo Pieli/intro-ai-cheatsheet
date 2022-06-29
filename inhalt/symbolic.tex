@@ -1,0 +1,195 @@
+\section{symbolic}
+\section*{uninformed search}
+\subsection*{properties}
+- time and space complexity: worst case \\
+ - semi-complete: guaranteed to find a solution \\
+ - complete: terminates if no solution exists 
+ 
+\subsection*{bfs}
+- Fifo, shallowest layer first, linked list, dequeue\\
+- complete if finite, else semi\\
+- optimal if all actions same cost \\
+- $time(b^d)$, space is same
+
+\subsection*{dfs}
+- Lifo, deepest node first, stack, not optimal\\
+- complete if acyclic, finite else not semi/complete\\
+- $time(b^{maxsearchd})$, $space(b \cdot maxsearchd)$
+
+\subsection*{ida}
+- comlete if acyclic, finite else semi \\
+- not optimal, $time(b^d)$, $space(bd)$
+
+\section*{informed search}
+\subsection*{heuristic}
+$h: S \rightarrow \mathbb{R}_0^{+} \cup \{\infty\}$ \\
+can be arbitrary function
+
+\subsection*{perfect heuristic}
+$h^{*}$: perfect heuristic \\
+- maps to cost of optimal solution \\
+- maps to $\infty$ if no solution exists for s 
+
+\subsection*{heuristic properties}
+safe: $h^{*}(s) = \infty$ f.a $s \in S$ with $h(s) = \infty$ \\
+goal-aware: $h(s) = 0$ f.a goal states $s$ \\
+admissible: $h(s) \leq h^{*}(s)$ f.a states $s \in S$ \\
+consistent: $h(s) \leq cost(a) + h(s`)$ f.a $s \xrightarrow{a} s`$  
+
+\subsection*{heuristic Theorem 1 + 2}
+T1: admissible $\implies$ safe + goal-aware  \\
+T2: goal-aware + consistent $\implies$ admissible\\
+consistent alone not sufficient 
+
+\subsection*{Best-first Search}
+$f (n) := g (n)$: uniform-cost search \\
+$f (n) := h(n)$: greedy best-first search \\
+$f (n) := g (n) + h(n)$: A* \\
+$f (n) := g (n) + w \cdot h(n)$: weighted A*
+
+
+\subsection*{Best-first Search Properties}
+\textbf{in general} \\
+complete for finite set of states\\
+(otherwise semi-complete) \\
+($h$ must be safe if states with $h(s) = \infty$ are pruned)(?)
+
+\textbf{greedy best first} \\
+- suboptimal: solutions can be arbitrarily bad \\
+- often very fast \\
+- monotonic transform. of h do not affect behaviour
+
+\textbf{astar and weighted astar} \\
+- with reopen: optimal with admissible $h$\\
+- no-reopen: optimal with admis. and consist. $h$
+
+\textbf{ida*} \\
+- inherits important properties of A∗ and DFS: \\
+- semi-complete \\
+- (must be safe if states with h(s) = $\infty$ are pruned) \\
+- optimal if h admissible \\
+- space complexity O(length * branchingfactor)
+
+\section*{CSP}
+$\langle V, dom, C\rangle$ \\
+$V$: nonempty, finite set of Vars \\
+$dom$: function of nonempty domain to each $v \in V$ \\
+$C$: set of constrains $c = \langle scope, rel\rangle$ \\
+scope = vars and $rel(c) \subseteq dom(v_1) \times dom(v_2) ...$
+
+\subsection*{Constraints}
+- unary has a single var in scope \\
+- binary has scope(c) = (u,v) for $u, v \in V, u \neq v$ \\
+- trivial if $rel(c) = dom(u) \times dom(v)$ \\
+- scope(c) = (u, v) is equiv. to scope(c`) = (v,u)
+
+\subsection*{Node/Arc/Path Consistency}
+- Node: no domains in confilict with unary\\ 
+- Arc: if one domain is fully covered \\
+- Path: no assingment breaks other vars
+
+
+\section*{Logic}
+\subsection*{Reasoning}
+reasoning can be reduced to testing validity \\
+Does $\Phi \models \psi$? \\
+1. test if $(\wedge_{\varphi \in \Phi}\varphi) \rightarrow \psi$ is tautology \\
+2. if yes, then $\phi \models \psi$ else not
+
+\subsection*{Resolution}
+join regel, sentence $\phi$ valid iff. $\neg\phi$ unsatisfiable 
+
+\subsection*{DPLL}
+simplify: assigning value and simplify \\
+unit clause heuristic: single variables are assigned\\
+pure symbol heuristic:  same sign assigned\\
+- sound and complete (time(exponential))\\
+- computes a model where $\phi$ is true\\
+- unassigned vars can be chosen arbitrarely
+
+\section*{Planning}
+- plan / proof for plan \\ 
+-  optimal planning and suboptimal planning
+
+\subsection*{PDDL}
+$\langle V, I, G, A \rangle$ \\
+$V$: finite set of binary state vars\\
+$I$: ,initial state, not mentioned are false\\
+$G$:  goal (set), not mentioned vars are irrelevant\\
+$A$: actions $a = \langle$ pre, eff, cost $\rangle$ \\
+everything is conj. over $V$ also pre(a), eff(a)
+
+\subsection*{Strips}
+- Statespace $\mathcal{S}(\Pi) = <S, A, cost, T, s_0, S_*>$ \\
+- like PDDL \\ 
+- but just true vals (actions) are important \\ 
+- instead eff: add and delete action \\
+- set notation for actions instead of conjunction
+
+\subsection*{SAS+}
+$\langle V, dom, I, G, A \rangle$ \\
+- $dom$: finite nonempty domain for $v \in V$ \\
+- no delete (like Stripes) \\
+- with assignments to domain \\
+- same statespace as strips
+
+\subsection*{Abstraction}
+- drop distinctions between certain states\\
+- preserve the state space behavior as well as possible \\
+- $\alpha: S \rightarrow S`$ be surjective \\
+- $\mathcal{S}^{\alpha} = \langle S`, A, cost, T`, s`_0, S`_*\rangle$
+
+\subsection*{Pattern Databases}
+$\pi_{\{p, t_A\}}$, e.g. $\{p \rightarrow L, t_A \rightarrow L\} = 2$
+
+\subsection*{Delete Relaxation}
+- Estimate solution costs by considering a simplified planning task \\
+- ignore delete action,  $del(a^{+}) = \emptyset $ \\
+- admissible and consistent heuristic
+
+\subsection*{Relaxed planning graph}
+\subsection*{Maximum and Additive Heuristic}
+- cost of var 0 in layer 0, otherwise min of pre \\
+- cost of action/goal $h^{max}$ max, $h^{add}$ sum of pre + cost(a) \\
+- termination criterion: stability if $V^i = V^{i-1}$ \\
+- heuristic value: value of goal vertex in last layer
+- $h^{max}$ optimistic assumption, max of cost \\ 
+- $h^{add}$ pessimistic assumption, all precond must be reached independently  \\
+- both safe and goal aware \\
+- $h^{max}$ is admissible and consistent, $h^{add}$ neither \\
+- $h^{add}$ not for optimal planning
+
+\subsection*{FF Heuristic}
+- like $h^{add}$  but with extra step
+
+
+\section*{Games}
+$\langle S, A, T , s_0, S_{*}, u, player \rangle $ \\
+transition model $T: S \times A \rightarrow S \cup \{\bot\}$ \\
+set of terminal states: $S_{*}$ \\
+utility function u : $S_{*} \rightarrow \mathbb{R}$ \\
+player function player : S \ $S_{*} \rightarrow $ \{max, min\}
+
+\subsection*{Minimax Discuss}
+- yields optimal strategy (Max at least root val)\\
+- assumption that the opponent plays perfectly
+
+
+\subsection*{Evaluation Function}
+- problem: game tree too big \\
+- search only up to predefined depth \\
+- depth reached: estimate the utility with $h$ (eval-func)
+\subsection*{Linear (weighted) Eval Functions}
+$w1f1 + w2f2 + · · · + wnfn$ \\
+- $w_i$ are weights, and $f_i$ are features. \\
+assumes that feature contributions are mut. indep.
+
+\subsection*{Move Ordering}
+- domain-specific ordering function (e.g. chess) \\
+- dyn. move-ordering (good in past, ids, prev iter.)
+
+\subsection*{Monte-Carlo Tree Search}
+1. selection (Tree policy): to terminal node \\
+2. expansion: add missing state to the tree \\
+3. simulation (default policy): find leaf value \\
+4. back propagation: average to starting to node
